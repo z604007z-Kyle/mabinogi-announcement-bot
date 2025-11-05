@@ -1,0 +1,6 @@
+discord.py
+selenium
+webdriver-manager
+python-dotenv
+pytz
+yt-dlp
