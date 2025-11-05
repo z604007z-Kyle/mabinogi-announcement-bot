@@ -1,0 +1,43 @@
+name: 瑪奇公告監聽器
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # 每 5 分鐘執行一次
+  workflow_dispatch:       # 允許手動觸發
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 拉取程式碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 安裝 Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+      - name: 安裝依賴
+        run: |
+          pip install -r requirements.txt
+
+      - name: 執行公告檢查
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+        run: |
+          python -c "
+import asyncio
+from bot import fetch_and_send_data, bot
+
+async def main():
+    await bot.login('${{ secrets.DISCORD_BOT_TOKEN }}')
+    await fetch_and_send_data()
+
+asyncio.run(main())
+          "
