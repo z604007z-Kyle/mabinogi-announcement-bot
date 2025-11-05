@@ -86,25 +86,29 @@ def fetch_data():
     driver.quit()
     return result
 
-# === 移除 @tasks.loop，改成普通函數 ===
 async def fetch_and_send_data():
     data = await asyncio.to_thread(fetch_data)
     global last_data
-    if data['title'] != last_data.get('title', '') or data['date'] != last_data.get('date', ''):
-        channel_id = 1286668475997356155
-        channel = bot.get_channel(channel_id)
-        if channel:
-            embed = discord.Embed(
-                title=data['title'],
-                description=f"日期： {data['date']}\n {data['more_url']}",
-                color=discord.Color.green()
-            )
-            if data['img_url'] != "未找到圖片 URL":
-                embed.set_image(url=data['img_url'])
-            await channel.send(embed=embed)
-            last_data = data
+    
+    if data['title'] != last_data.get('title', ''):
+        webhook_url = "https://discord.com/api/webhooks/1435472995056353311/7XnnoWTQ_3QBQ89N-9kn0GsAvWI6HoGPqZYf_i6WezpR77MQLLyUm_9UAWuBTdfLrF_M"
+        
+        embed = discord.Embed(
+            title=data['title'],
+            description=f"日期：{data['date']}\n{data['more_url']}",
+            color=discord.Color.green()
+        )
+        if data['img_url'] != "未找到圖片 URL":
+            embed.set_image(url=data['img_url'])
+        
+        # 直接用 requests 推（不用 discord.py）
+        import requests
+        requests.post(webhook_url, json={"embeds": [embed.to_dict()]})
+        
+        last_data = data
+        print(f"已推播新公告：{data['title']}")
     else:
-        print("沒有新資料，未發送訊息。")
+        print("沒有新資料")
 
 # 用來管理音樂播放
 voice_clients = {}
@@ -268,5 +272,6 @@ if __name__ == "__main__":
             await bot.login(token)
             await fetch_and_send_data()
         asyncio.run(main())
+
 
 
