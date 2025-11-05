@@ -433,7 +433,15 @@ async def on_ready():
     # if not send_daily_weather.is_running():
     #     send_daily_weather.start()
 
-token = os.getenv("DISCORD_BOT_TOKEN")
-if not token:
-    raise ValueError("DISCORD_BOT_TOKEN 未設置或無效")
-bot.run(token)
+
+# === GitHub Actions 專用入口 ===
+if __name__ == "__main__":
+    import asyncio
+    token = os.getenv("DISCORD_BOT_TOKEN")
+    if not token:
+        print("錯誤：DISCORD_BOT_TOKEN 未設置")
+    else:
+        async def main():
+            await bot.login(token)
+            await fetch_and_send_data()
+        asyncio.run(main())
