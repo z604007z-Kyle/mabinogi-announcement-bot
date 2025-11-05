@@ -86,8 +86,7 @@ def fetch_data():
     driver.quit()
     return result
 
-# 定義定時任務（每 5 分鐘執行一次）
-@tasks.loop(minutes=5)
+# === 移除 @tasks.loop，改成普通函數 ===
 async def fetch_and_send_data():
     data = await asyncio.to_thread(fetch_data)
     global last_data
@@ -445,3 +444,4 @@ if __name__ == "__main__":
             await bot.login(token)
             await fetch_and_send_data()
         asyncio.run(main())
+
