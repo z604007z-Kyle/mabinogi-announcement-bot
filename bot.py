@@ -91,7 +91,7 @@ async def fetch_and_send_data():
     global last_data
     
     if data['title'] != last_data.get('title', ''):
-        webhook_url = "https://discord.com/api/webhooks/1435472995056353311/7XnnoWTQ_3QBQ89N-9kn0GsAvWI6HoGPqZYf_i6WezpR77MQLLyUm_9UAWuBTdfLrF_M"
+        webhook_url = "https://discord.com/api/webhooks/1435490160543400048/UZUPFK79m6ghhgOSIOgJxYmNK9L2cHL81SQ3EBF3jvzg1ETqDef4NjgsXqqvBAJk1jGL"
         
         embed = discord.Embed(
             title=data['title'],
@@ -272,6 +272,7 @@ if __name__ == "__main__":
             await bot.login(token)
             await fetch_and_send_data()
         asyncio.run(main())
+
 
 
 
